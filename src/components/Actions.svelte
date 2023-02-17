@@ -1,13 +1,14 @@
 <script>
   import Button from "./Button.svelte";
+  export let map;
 </script>
 
 
 <div class="actions">
-  <Button type="restart" />
+  <Button type="restart" on:click={map.restart}/>
   <div class="spacer" />
-  <Button type="minus" />
-  <Button type="plus" />
+  <Button type="minus" on:click={map.zoomOut} />
+  <Button type="plus" on:click={map.zoomIn} />
 </div>
 
 <style>

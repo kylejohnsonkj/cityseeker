@@ -4,7 +4,7 @@
   const left = type == "plus" ? 20 : 0;
 </script>
 
-<button style="margin-left: {left}px">
+<button style="margin-left: {left}px" on:click>
   <img src="images/{type}.svg" alt="{type}" width="{size}" height="{size}">
 </button>
 
