@@ -31,6 +31,7 @@
     <br>
     <h3>Legend</h3>
     <ul class="no-style">
+      <li>⚫️ Very Far</li>
       <li>🔴 Far</li>
       <li>🟠 Near</li>
       <li>🟡 Close</li>
@@ -45,7 +46,7 @@
     <br>
     <b>{didWin ? "Congratulations!" : "Sorry!"}</b>
     <br>
-    <p>The city was {city.city}, {city.regionCode}.</p>
+    <p>The city was {city.city}, {city.region}.</p>
     <p>Population: {city.population.toLocaleString()}</p>
   </Modal>
 {/if}

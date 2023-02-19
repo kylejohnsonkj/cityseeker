@@ -33,10 +33,20 @@
     mapComponent.setZoom(defaultZoom);
   }
 
-  let marker;
-  let markers = [];
-
-  let emojiMap = {0: "⚪️", 1: "🔴", 2: "🟠", 3: "🟡", 4: "🟢"}
+  function getGuess(milesAway) {
+    let guessMap = lights.guessMap;
+    if (milesAway < guessMap[5].radius) {
+      return 5;
+    } else if (milesAway < guessMap[4].radius) {
+      return 4;
+    } else if (milesAway < guessMap[3].radius) {
+      return 3;
+    } else if (milesAway < guessMap[2].radius) {
+      return 2;
+    } else {
+      return 1;
+    }
+  }
 
   function addMarker(e) {
     const data = e.detail;
@@ -53,22 +63,14 @@
     var milesAway = turf.distance(targetLocation, guessLocation, options);
     console.log(milesAway);
 
-    let guessAccuracy;
-    if (milesAway < 75) {
-      guessAccuracy = 4;
-    } else if (milesAway < 500) {
-      guessAccuracy = 3;
-    } else if (milesAway < 1000) {
-      guessAccuracy = 2;
-    } else {
-      guessAccuracy = 1;
-    }
+    let guessAccuracy = getGuess(milesAway);
+    let guess = lights.guessMap[guessAccuracy];
 
     var el = document.createElement('div');
     el.className = 'marker';
     el.style.fontSize = '30px';
     el.style.width = '31.5px';
-    el.innerHTML = emojiMap[guessAccuracy];
+    el.innerHTML = guess.emoji;
 
     let marker = new mapboxgl.Marker(el);
     marker.setLngLat(guessLocation);
@@ -91,12 +93,13 @@
 
     console.log("round: " + round)
 
-    if (round == 6 || guessAccuracy == 4) {
+    if (round == 6 || guessAccuracy == 5) {
       addCircle(2);
       addCircle(3);
       addCircle(4);
+      addCircle(5);
       reset(2000);
-      let didWin = guessAccuracy == 4;
+      let didWin = guessAccuracy == 5;
       modal.gameOver(city, didWin);
     }
   }
@@ -112,7 +115,7 @@
       sort: '-population', // Sort by population in descending order
       limit: 1, // Limit to 1 result
       offset: Math.floor(Math.random() * 500), // Random offset to retrieve a random city
-      regionIds: '-HI,-AK' // Exclude Hawaii and Alaska
+      regionIds: '-HI,-AK,-AS,-GU,-MP,-PR,-VI' // only 48 states
     };
 
     try {
@@ -133,8 +136,7 @@
   }
 
   function addCircle(layer) {
-    const guessRadius = { 2: 1000, 3: 500, 4: 75 }
-    const guessColor = { 2: "#E17F01", 3: "#FED703", 4: "#06AE01"}
+    let guess = lights.guessMap[layer];
 
     var circle = {
       "type": "Feature",
@@ -143,7 +145,7 @@
         "coordinates": targetLocation,
       },
       "properties": {
-        "radius": guessRadius[layer]
+        "radius": guess.radius
       }
     };
 
@@ -158,7 +160,7 @@
         "data": circleFeature
       },
       "paint": {
-        "fill-color": guessColor[layer],
+        "fill-color": guess.color,
         "fill-opacity": 0.5
       }
     });

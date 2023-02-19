@@ -1,7 +1,23 @@
 <script>
+  class Guess {
+    constructor(emoji, radius, color) {
+      this.emoji = emoji;
+      this.radius = radius;
+      this.color = color;
+    }
+  }
+
+  export const guessMap = {
+      0: new Guess("⚪️", null, null),
+      1: new Guess("⚫️", null, null),
+      2: new Guess("🔴", 1200, "#D11716"), 
+      3: new Guess("🟠", 750, "#E17F01"), 
+      4: new Guess("🟡", 300, "#FED703"), 
+      5: new Guess("🟢", 75, "#06AE01")
+  }
+
   let guesses = [0, 0, 0, 0, 0, 0];
-  let emojiMap = {0: "⚪️", 1: "🔴", 2: "🟠", 3: "🟡", 4: "🟢"}
-  export let round = 0;
+  let round = 0;
 
   export function makeGuess(guess) {
     if (round == 6) {
@@ -15,7 +31,7 @@
 
 <div class="lights">
   {#each guesses as guess}
-    {emojiMap[guess] + " "}
+    {guessMap[guess].emoji + " "}
   {/each}
 </div>
 
