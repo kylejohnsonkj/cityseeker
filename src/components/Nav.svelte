@@ -1,5 +1,9 @@
+<script>
+	export let modal;
+</script>
+
 <nav>
-  <button>
+  <button on:click={modal.toggleHelp}>
     <img src="images/help.svg" alt="Help">
   </button>
   <div class="title">Searchle</div>

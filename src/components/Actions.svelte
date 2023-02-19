@@ -5,7 +5,7 @@
 
 
 <div class="actions">
-  <Button type="restart" on:click={map.restart}/>
+  <Button type="restart" on:click={map.reset(750)}/>
   <div class="spacer" />
   <Button type="minus" on:click={map.zoomOut} />
   <Button type="plus" on:click={map.zoomIn} />
