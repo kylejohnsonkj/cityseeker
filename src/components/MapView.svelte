@@ -2,7 +2,6 @@
   import { Map } from '@beyonk/svelte-mapbox';
   import * as turf from '@turf/turf';
 
-  export let width;
   export let height;
   export let lights;
   export let modal;
@@ -12,14 +11,16 @@
     return mapComponent.getMap();
   }
   
-  export let zoom;
-  let center;
-
-  const defaultCenter = [-98.56, 39.35];
+  const defaultCenter = [-97.90, 39.38];
   let defaultZoom;
 
   let city;
   let targetLocation;
+
+  const maxBounds = [
+    [-138.8, 22], // Southwest coordinates
+    [-57, 51] // Northeast coordinates
+  ];
 
   (async function() {
     city = await getRandomCity();
@@ -28,9 +29,12 @@
   })();
   
   function ready() {
-    defaultZoom = Math.min(width, height) / 200;
+    getMap().setMaxBounds(maxBounds);
+
+    mapComponent.setZoom(0);
     mapComponent.setCenter(defaultCenter);
-    mapComponent.setZoom(defaultZoom);
+    
+    defaultZoom = getMap().getZoom();
   }
 
   function getGuess(milesAway) {
@@ -49,6 +53,11 @@
   }
 
   function addMarker(e) {
+    if (lights.getCurrentGuess() >= lights.maxGuesses) {
+      // game is over
+      return;
+    }
+
     const data = e.detail;
     if (data.lng === undefined || data.lat === undefined) {
       return;
@@ -89,16 +98,19 @@
     // }
     // marker.getElement().innerHTML = emojiMap[guessAccuracy];
 
-    let round = lights.makeGuess(guessAccuracy);
+    lights.makeGuess(guessAccuracy);
 
-    console.log("round: " + round)
+    console.log("currentGuess: " + lights.getCurrentGuess());
 
-    if (round == 6 || guessAccuracy == 5) {
+    console.log(lights.maxGuesses);
+
+    if (lights.getCurrentGuess() == lights.maxGuesses || guessAccuracy == 5) {
       addCircle(2);
       addCircle(3);
       addCircle(4);
       addCircle(5);
-      reset(2000);
+      getMap().setMaxBounds(null);
+      reset(2000, true);
       let didWin = guessAccuracy == 5;
       modal.gameOver(city, didWin);
     }
@@ -166,12 +178,19 @@
     });
   }
 
-  export function reset(duration) {
-    mapComponent.flyTo({
-      center: defaultCenter,
-      zoom: defaultZoom,
-      duration: duration
-    });
+  export function reset(duration, isGameOver) {
+    if (isGameOver) {
+      mapComponent.flyTo({
+        center: [Number(city.longitude), Number(city.latitude)],
+        zoom: defaultZoom,
+        duration: duration
+      });
+    } else {
+      mapComponent.flyTo({
+        zoom: defaultZoom,
+        duration: duration
+      });
+    }
   }
 
   export function zoomOut() {
@@ -189,17 +208,18 @@
     });
   }
 
+  let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 19 : 0
+
 </script>
 
-<div class="map" style="height: {height - 205}px">
+<div class="map" style="height: {height + extraHeight - 205}px">
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
   bind:this={mapComponent} 
-  bind:center 
-  bind:zoom
   on:click={addMarker}
   on:ready={ready}>
   </Map>
+  <!-- style='mapbox://styles/mapbox/light-v10'  -->
 </div>
 
 <style>

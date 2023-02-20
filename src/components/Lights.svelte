@@ -1,4 +1,13 @@
 <script>
+  export const maxGuesses = 8;
+  let currentGuess = 0;
+
+  export function getCurrentGuess() {
+    return currentGuess;
+  }
+
+  let guesses = new Array(maxGuesses).fill(0);
+
   class Guess {
     constructor(emoji, radius, color) {
       this.emoji = emoji;
@@ -10,22 +19,18 @@
   export const guessMap = {
       0: new Guess("⚪️", null, null),
       1: new Guess("⚫️", null, null),
-      2: new Guess("🔴", 1200, "#D11716"), 
-      3: new Guess("🟠", 750, "#E17F01"), 
+      2: new Guess("🔴", 900, "#D11716"), 
+      3: new Guess("🟠", 600, "#E17F01"), 
       4: new Guess("🟡", 300, "#FED703"), 
-      5: new Guess("🟢", 75, "#06AE01")
+      5: new Guess("🟢", 75, "#06AE01"),
+      6: new Guess("🔵", null, null),
   }
 
-  let guesses = [0, 0, 0, 0, 0, 0];
-  let round = 0;
-
   export function makeGuess(guess) {
-    if (round == 6) {
-      return; // game over
+    if (currentGuess < maxGuesses) {
+      guesses[currentGuess] = guess;
     }
-    guesses[round] = guess;
-    round++;
-    return round
+    currentGuess++;
   };
 </script>
 
@@ -43,5 +48,11 @@
     font-size: 2.9em;
     padding: 5px;
     border-bottom: 1px solid lightgray;
+  }
+
+  @media (max-width: 500px) {
+    .lights {
+      font-size: 2.2em;
+    }
   }
 </style>

@@ -7,6 +7,8 @@
   let city;
   let didWin;
 
+  export let lights;
+
 	export function toggleHelp() {
 		showHelp = !showHelp;
 		console.log(showHelp);
@@ -23,7 +25,7 @@
   <Modal on:close="{() => showHelp = false}">
     <h2 slot="header">How To Play</h2>
     <br>
-    <b>Guess the location in 6 tries</b>
+    <b>Guess the location in {lights.maxGuesses} tries</b>
     <ul>
       <li>The location is a city (over 40k) in the continental US</li>
       <li>Your marker color reflects how far away you are</li>
@@ -42,11 +44,11 @@
 
 {#if showGameOver}
   <Modal on:close="{() => showGameOver = false}">
-    <h2 slot="header">{didWin ? "You Won" : "Game Over"}</h2>
+    <h2 slot="header">{didWin ? "City Found!" : "Game Over!"}</h2>
     <br>
-    <b>{didWin ? "Congratulations!" : "Sorry!"}</b>
+    <b>{didWin ? "Congratulations" : "Your streak has ended"}</b>
     <br>
-    <p>The city was {city.city}, {city.region}.</p>
+    <p>The city was {city.city}, {city.region}</p>
     <p>Population: {city.population.toLocaleString()}</p>
   </Modal>
 {/if}

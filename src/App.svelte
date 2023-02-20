@@ -8,19 +8,19 @@
 	import { onMount } from 'svelte';
 
 	let lights, map, modal;
-	let width, height;
+	let height;
 
 	onMount(async () => {
 		modal.toggleHelp();
 	});
 </script>
 
-<svelte:window bind:innerWidth={width} bind:innerHeight={height}/>
+<svelte:window bind:innerHeight={height}/>
 
 <main>
 	<Nav {modal} />
 	<Lights bind:this={lights} />
-	<MapView bind:this={map} {width} {height} {lights} {modal} />
+	<MapView bind:this={map} {height} {lights} {modal} />
 	<Actions {map} />
-	<ModalView bind:this={modal} />
+	<ModalView bind:this={modal} {lights} />
 </main>
