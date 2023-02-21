@@ -32,13 +32,16 @@
     </ul>
     <br>
     <h3>Legend</h3>
-    <ul class="no-style">
-      <li>⚫️ Very Far</li>
-      <li>🔴 Far</li>
-      <li>🟠 Near</li>
-      <li>🟡 Close</li>
-      <li>🟢 Found</li>
-    </ul>
+    <div class="bottom">
+      <ul class="no-style">
+        <li>⚫️ Very Far</li>
+        <li>🔴 Far</li>
+        <li>🟠 Near</li>
+        <li>🟡 Close</li>
+        <li>🟢 Found</li>
+      </ul>
+      <Button text="Start Game" on:click={toggleHelp} />
+    </div>
   </Modal>
 {/if}
 
@@ -48,12 +51,17 @@
     <br>
     <b>{didWin ? "Congratulations" : "Your streak has ended"}</b>
     <br>
-    <p>The city was {city.city}, {city.region}</p>
+    <p>The city was {city.city}, {city.state}</p>
     <p>Population: {city.population.toLocaleString()}</p>
   </Modal>
 {/if}
 
 <style>
+  .bottom {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
   ul {
     padding-left: 30px;
     padding-right: 1px;

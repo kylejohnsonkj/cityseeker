@@ -1,39 +1,36 @@
 <script>
+  import Cities from './Cities.svelte';
   import { Map } from '@beyonk/svelte-mapbox';
   import * as turf from '@turf/turf';
 
   export let height;
   export let lights;
   export let modal;
-
+  
+  let cities;
   let mapComponent;
+
   function getMap() {
     return mapComponent.getMap();
   }
   
-  const defaultCenter = [-97.90, 39.38];
-  let defaultZoom;
+  let defaultCenter = [-98, 37.25];
 
   let city;
+  let defaultZoom;
   let targetLocation;
 
+  // little trick to center the map on any screen size while keeping it fit to the USA height
   const maxBounds = [
-    [-138.8, 22], // Southwest coordinates
-    [-57, 51] // Northeast coordinates
+    [defaultCenter[0], defaultCenter[1] - 13.25], // Southwest coordinates
+    [defaultCenter[0], defaultCenter[1] + 13.25] // Northeast coordinates
   ];
 
-  (async function() {
-    city = await getRandomCity();
-    targetLocation = [Number(city.longitude), Number(city.latitude)];
-    console.log(targetLocation);
-  })();
-  
   function ready() {
-    getMap().setMaxBounds(maxBounds);
+    city = cities.getRandomCity();
+    targetLocation = [city.lng, city.lat];
 
-    mapComponent.setZoom(0);
-    mapComponent.setCenter(defaultCenter);
-    
+    getMap().fitBounds(maxBounds, { animate: false });
     defaultZoom = getMap().getZoom();
   }
 
@@ -109,41 +106,9 @@
       addCircle(3);
       addCircle(4);
       addCircle(5);
-      getMap().setMaxBounds(null);
       reset(2000, true);
       let didWin = guessAccuracy == 5;
       modal.gameOver(city, didWin);
-    }
-  }
-
-  const API_KEY = '<RAPID_API_KEY>'; // Replace with your actual API key
-  const URL = 'https://wft-geo-db.p.rapidapi.com/v1/geo/cities'; // API endpoint
-
-  async function getRandomCity() {
-    // Parameters for the API request
-    const params = {
-      countryIds: 'US', // Filter to only include cities in the US
-      types: 'CITY',
-      sort: '-population', // Sort by population in descending order
-      limit: 1, // Limit to 1 result
-      offset: Math.floor(Math.random() * 500), // Random offset to retrieve a random city
-      regionIds: '-HI,-AK,-AS,-GU,-MP,-PR,-VI' // only 48 states
-    };
-
-    try {
-      const response = await fetch(URL + '?' + new URLSearchParams(params), {
-        headers: {
-          'X-RapidAPI-Key': API_KEY
-        }
-      });
-
-      const data = await response.json();
-      const city = data.data[0]; // Get the first (and only) result
-      console.log(city);
-      console.log(`Random city in the continental US: ${city.city}, ${city.regionCode} at (${city.latitude}, ${city.longitude}). Population ${city.population}`);
-      return city;
-    } catch (error) {
-      console.log(error);
     }
   }
 
@@ -181,15 +146,12 @@
   export function reset(duration, isGameOver) {
     if (isGameOver) {
       mapComponent.flyTo({
-        center: [Number(city.longitude), Number(city.latitude)],
+        center: targetLocation,
         zoom: defaultZoom,
         duration: duration
       });
     } else {
-      mapComponent.flyTo({
-        zoom: defaultZoom,
-        duration: duration
-      });
+      getMap().fitBounds(maxBounds);
     }
   }
 
@@ -213,6 +175,7 @@
 </script>
 
 <div class="map" style="height: {height + extraHeight - 205}px">
+  <Cities bind:this={cities} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
   bind:this={mapComponent} 
