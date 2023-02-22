@@ -32,6 +32,11 @@
     }
     currentGuess++;
   };
+
+  export function hasGuessedBefore(newGuess) {
+    console.log(guesses.filter(guess => guess == newGuess))
+    return guesses.filter(guess => guess == newGuess).length > 0;
+  }
 </script>
 
 <div class="lights">

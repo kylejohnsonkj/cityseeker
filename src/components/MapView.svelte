@@ -63,10 +63,9 @@
     let guessLocation = [data.lng, data.lat];
     console.log(guessLocation);
 
-    const options = { units: "miles" }
     console.log("Target: " + targetLocation)
     console.log("Guess: " + guessLocation)
-    var milesAway = turf.distance(targetLocation, guessLocation, options);
+    var milesAway = turf.distance(targetLocation, guessLocation, { units: "miles" });
     console.log(milesAway);
 
     let guessAccuracy = getGuess(milesAway);
@@ -76,7 +75,11 @@
     el.className = 'marker';
     el.style.fontSize = '30px';
     el.style.width = '31.5px';
-    el.innerHTML = guess.emoji;
+
+    let arrow = getArrow(guessLocation, milesAway, guessAccuracy);
+
+    const guessDiv = "<div style='position: relative; display: inline-block;'><span>" + guess.emoji + "</span><span style='position: absolute; top: 35%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 0.9em;'>" + arrow + "</span></div>";
+    el.innerHTML = guessDiv;
 
     let marker = new mapboxgl.Marker(el);
     marker.setLngLat(guessLocation);
@@ -110,6 +113,41 @@
       let didWin = guessAccuracy == 5;
       modal.gameOver(city, didWin);
     }
+  }
+
+  function getArrow(guessLocation, dist, guess) {
+    const leftArrow = "⇦"
+    const rightArrow = "⇨"
+    const upArrow = "⇧"
+    const downArrow = "⇩"
+    const noArrow = ""
+
+    if (!lights.hasGuessedBefore(guess)) {
+      return noArrow;
+    }
+
+    // var verticalMiles = turf.distance(guessLocation, [targetLocation[0], guessLocation[1]], { units: "miles" });
+    // var horizontalMiles = turf.distance(guessLocation, [guessLocation[0], targetLocation[1]], { units: "miles" });
+    // var bearing = turf.bearing(guessLocation, targetLocation);
+
+    const bear = turf.bearing(guessLocation, targetLocation);
+
+    // Calculate the offset in meters by using trigonometry to find the horizontal and vertical components
+    const offsetHoriz = dist * Math.sin(bear * Math.PI / 180);
+    const offsetVert = dist * Math.cos(bear * Math.PI / 180);
+
+    console.log("horiz: " + offsetHoriz);
+    console.log("vert: " + offsetVert);
+
+     if (Math.abs(offsetHoriz) > Math.abs(offsetVert)) {
+      // left or right (+)
+      if (offsetHoriz >= 0) { return rightArrow; }
+      if (offsetHoriz < 0) { return leftArrow; }
+     } else if (Math.abs(offsetVert) > Math.abs(offsetHoriz)) {
+      // up or down (+)
+      if (offsetVert >= 0) { return upArrow; }
+      if (offsetVert < 0) { return downArrow; }
+     }
   }
 
   function addCircle(layer) {
