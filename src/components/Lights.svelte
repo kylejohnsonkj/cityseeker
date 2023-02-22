@@ -19,9 +19,9 @@
   export const guessMap = {
       0: new Guess("⚪️", null, null),
       1: new Guess("⚫️", null, null),
-      2: new Guess("🔴", 900, "#D11716"), 
-      3: new Guess("🟠", 600, "#E17F01"), 
-      4: new Guess("🟡", 300, "#FED703"), 
+      2: new Guess("🔴", 750, "#D11716"), 
+      3: new Guess("🟠", 500, "#E17F01"), 
+      4: new Guess("🟡", 250, "#FED703"), 
       5: new Guess("🟢", 75, "#06AE01"),
       6: new Guess("🔵", null, null),
   }
