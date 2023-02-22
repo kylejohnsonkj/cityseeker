@@ -11,7 +11,6 @@
 
 	export function toggleHelp() {
 		showHelp = !showHelp;
-		console.log(showHelp);
 	}
   
   export function gameOver(targetCity, targetDidWin) {
