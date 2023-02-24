@@ -48,8 +48,9 @@
     return currentGuess == maxGuesses || guesses[currentGuess - 1] == winAccuracy
   }
 
-  export function isNewGuess(guess) {
-    return !guesses.filter(g => g == guess).length;
+  export function isBestGuessSoFar(guess) {
+    let currentGuesses = guesses.filter(g => g != 0); // all non-zero guesses
+    return currentGuesses.filter(g => guess <= g).length == 1;
   }
 </script>
 

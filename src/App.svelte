@@ -7,7 +7,7 @@
 
 	import { onMount } from 'svelte';
 
-	let lights, map, modal;
+	let lights, map, actions, modal;
 	let height;
 
 	onMount(async () => {
@@ -20,7 +20,7 @@
 <main>
 	<Nav {modal} />
 	<Lights bind:this={lights} />
-	<MapView bind:this={map} {height} {lights} {modal} />
-	<Actions {map} />
+	<MapView bind:this={map} {height} {lights} {modal} {actions} />
+	<Actions bind:this={actions} {map} />
 	<ModalView bind:this={modal} {lights} />
 </main>

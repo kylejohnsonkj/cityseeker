@@ -28,6 +28,7 @@
     <ul>
       <li>The location is a city (over 40k) in the continental US</li>
       <li>Your marker color reflects how far away you are</li>
+      <li>The compass will activate when you need help</li>
     </ul>
     <br>
     <h3>Legend</h3>

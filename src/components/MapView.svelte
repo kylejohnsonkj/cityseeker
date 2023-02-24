@@ -6,6 +6,7 @@
   export let height;
   export let lights;
   export let modal;
+  export let actions;
   
   let cities;
   let mapComponent;
@@ -80,6 +81,8 @@
 
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
       reset(2000, true);
+    } else {
+      setCompassAngle(guessLocation, milesAway, guess);
     }
   }
 
@@ -88,26 +91,19 @@
     el.className = 'marker';
     el.style.fontSize = '30px';
     el.style.width = '31.5px';
-
-    let arrow = getArrow(guessLocation, milesAway, guess.accuracy);
-
-    const guessDiv = "<div class='guess'><span>" + guess.emoji + "</span><span class='arrow'>" + arrow + "</span></div>";
-    el.innerHTML = guessDiv;
+    el.innerHTML = guess.emoji;
 
     let marker = new mapboxgl.Marker(el);
     marker.setLngLat(guessLocation);
     marker.addTo(getMap());
   }
 
-  function getArrow(guessLocation, dist, guess) {
-    const leftArrow = "⇦"
-    const rightArrow = "⇨"
-    const upArrow = "⇧"
-    const downArrow = "⇩"
-    const noArrow = ""
+  function setCompassAngle(guessLocation, dist, guess) {
+    let angle = 0;
 
-    if (lights.isNewGuess(guess)) {
-      return noArrow;
+    if (lights.isBestGuessSoFar(guess.accuracy)) {
+      actions.getCompass().setAngle(angle);   // disable compass
+      return
     }
 
     const bearing = turf.bearing(guessLocation, targetLocation);
@@ -115,9 +111,11 @@
     const vertDist = dist * Math.cos(bearing * Math.PI / 180);
 
     if (Math.abs(horizDist) >= Math.abs(vertDist)) {
-      return horizDist >= 0 ? rightArrow : leftArrow;
+      angle = horizDist >= 0 ? 45 /*right*/ : -135 /*left*/;
+    } else {
+      angle = vertDist >= 0 ? -45 /*up*/ : 135 /*down*/;
     }
-    return vertDist >= 0 ? upArrow : downArrow;
+    actions.getCompass().setAngle(angle);
   }
 
   function addCircle(layer) {
@@ -182,7 +180,7 @@
   let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 19 : 0
 </script>
 
-<div class="map" style="height: {height + extraHeight - 205}px">
+<div class="map" style="height: {height + extraHeight - 208}px">
   <Cities bind:this={cities} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
@@ -198,18 +196,6 @@
   .map {
     border-bottom: 1px solid lightgray;
     background-color: gray;
-  }
-  :global(.guess) {
-    position: relative; 
-    display: inline-block;
-  }
-  :global(.arrow) {
-    position: absolute; 
-    top: 35%; 
-    left: 50%; 
-    transform: translate(-50%, -50%); 
-    color: white; 
-    font-size: 0.9em;
   }
 </style>
 
