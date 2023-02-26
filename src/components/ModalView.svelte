@@ -7,16 +7,39 @@
   let city;
   let didWin;
 
+  export let map;
   export let lights;
 
 	export function toggleHelp() {
 		showHelp = !showHelp;
 	}
+
+  export function nextRound() {
+    showGameOver = false;
+    map.nextRound();
+  }
   
   export function gameOver(targetCity, targetDidWin) {
     showGameOver = true;
     city = targetCity;
     didWin = targetDidWin;
+  }
+
+  // package.json --http2 --key key.pem --cert cert.pem
+  export function shareResult() {
+    const shareData = {
+      title: 'Searchle',
+      text: `I scored ${lights.getTotalScore()}`,
+    };
+    navigator.share(shareData)
+      .then(() => console.log('Shared successfully'))
+      .catch((error) => console.log(`Error sharing: ${error}`));
+  }
+
+  export function copyResult() {
+    let result = `Searchle ${lights.getTotalScore()}pts\n\n`;
+    result += lights.getAllGuessesAsEmoji();
+    alert(result);
   }
 </script>
 
@@ -26,9 +49,9 @@
     <br>
     <b>Guess the location in {lights.maxGuesses} tries</b>
     <ul>
-      <li>The location is a city (over 40k) in the continental US</li>
+      <li>The location is a city in the US</li>
       <li>Your marker color reflects how far away you are</li>
-      <li>The compass will activate when you need help</li>
+      <li>The compass will activate to help you</li>
     </ul>
     <br>
     <h3>Legend</h3>
@@ -47,12 +70,29 @@
 
 {#if showGameOver}
   <Modal on:close="{() => showGameOver = false}">
-    <h2 slot="header">{didWin ? "City Found!" : "Game Over!"}</h2>
-    <br>
-    <b>{didWin ? "Congratulations" : "Your streak has ended"}</b>
+    <h2 slot="header">{didWin ? "City Found!" : lights.hasNextRound() ? "Limit Reached" : "Game Over"}</h2>
     <br>
     <p>The city was {city.city}, {city.state}</p>
     <p>Population: {city.population.toLocaleString()}</p>
+    <br>
+    <div class="bottom">
+      <div>
+        <span>Round score: {lights.getRoundScore()}</span>
+        {#if lights.didFail()}
+          <span class="penalty">(+2 penalty)</span>
+        {/if}
+        <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getTotalScore()}</b></div>
+      </div>
+      {#if lights.hasNextRound()}
+        <Button text="Next Round" on:click={nextRound} />
+      {:else}
+        {#if navigator.share}
+          <Button text="Share" on:click={shareResult} />
+        {:else}
+          <Button text="Copy" on:click={copyResult} />
+        {/if}
+      {/if}
+    </div>
   </Modal>
 {/if}
 
@@ -72,5 +112,8 @@
   }
   h2, h3 {
     padding-bottom: 5px;
+  }
+  .penalty {
+    color: red;
   }
 </style>

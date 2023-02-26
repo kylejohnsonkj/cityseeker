@@ -22,5 +22,5 @@
 	<Lights bind:this={lights} />
 	<MapView bind:this={map} {height} {lights} {modal} {actions} />
 	<Actions bind:this={actions} {map} />
-	<ModalView bind:this={modal} {lights} />
+	<ModalView bind:this={modal} {lights} {map} />
 </main>

@@ -2,8 +2,60 @@
   export const maxGuesses = 8;
   export const winAccuracy = 5;
 
+  let currentRound = 1;
+  const maxRounds = 5;
+
+  let allGuesses = [];
   let guesses = new Array(maxGuesses).fill(0);
   let currentGuess = 0;
+  let score = 0;
+
+  export function resetForNextRound() {
+    guesses = new Array(maxGuesses).fill(0);
+    currentGuess = 0;
+    currentRound++;
+  }
+
+  export function saveGuesses() {
+    allGuesses.push(guesses);
+    increaseScore(currentGuess);
+  }
+
+  export function getAllGuessesAsEmoji() {
+    let allEmojis = "";
+    console.log(allGuesses);
+    for (let i = 0; i < maxRounds; i++) {
+      allEmojis += getGuessesAsEmoji(allGuesses[i]) + "\n";
+    }
+    return allEmojis;
+  }
+
+  function getGuessesAsEmoji(roundGuesses) {
+    let emojis = "";
+    for (let i = 0; i < maxGuesses; i++) {
+      emojis += guessMap[roundGuesses[i]].emoji;
+    }
+    return emojis;
+  }
+
+  export function hasNextRound() {
+    return currentRound != maxRounds;
+  }
+
+  export function increaseScore(newScore) {
+    score += newScore;
+    if (didFail()) {
+      score += 2; // add penalty
+    }
+  }
+
+  export function getTotalScore() {
+    return score;
+  }
+
+  export function getRoundScore() {
+    return currentGuess + (didFail() ? 2 : 0);
+  }
 
   class Guess {
     constructor(accuracy, emoji, radius, color) {
@@ -24,9 +76,7 @@
   }
 
   export function makeGuess(guess) {
-    if (currentGuess < maxGuesses) {
-      guesses[currentGuess] = guess;
-    }
+    guesses[currentGuess] = guess;
     currentGuess++;
   };
 
@@ -44,8 +94,20 @@
     }
   }
 
+  export function getCurrentGuess() {
+    return currentGuess;
+  }
+
+  export function getLatestGuessAccuracy() {
+    return guesses[currentGuess];
+  }
+
   export function isGameOver() {
     return currentGuess == maxGuesses || guesses[currentGuess - 1] == winAccuracy
+  }
+
+  export function didFail() {
+    return currentGuess == maxGuesses && guesses[currentGuess - 1] != winAccuracy
   }
 
   export function isBestGuessSoFar(guess) {

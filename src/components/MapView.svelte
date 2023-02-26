@@ -10,6 +10,8 @@
   
   let cities;
   let mapComponent;
+  let markers = [];
+  let layers = [];
 
   function getMap() {
     return mapComponent.getMap();
@@ -39,9 +41,9 @@
     if (data.lng === undefined || data.lat === undefined) {
       return;
     }
-    console.log();
 
     if (lights.isGameOver()) {
+      modal.gameOver(city, lights.getLatestGuessAccuracy() == lights.winAccuracy);
       return; // game is over
     }
 
@@ -79,6 +81,7 @@
       addCircle(4); // yellow
       addCircle(5); // green
 
+      lights.saveGuesses();
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
       reset(2000, true);
     } else {
@@ -96,6 +99,8 @@
     let marker = new mapboxgl.Marker(el);
     marker.setLngLat(guessLocation);
     marker.addTo(getMap());
+
+    markers.push(marker);
   }
 
   function setCompassAngle(guessLocation, dist, guess) {
@@ -135,7 +140,7 @@
     let options = {steps: 64, units: 'miles'};
     let circleFeature = turf.circle(targetLocation, circle.properties.radius, options);
 
-    getMap().addLayer({
+    let circleLayer = {
       "id": "circle-layer" + layer,
       "type": "fill",
       "source": {
@@ -146,7 +151,10 @@
         "fill-color": guess.color,
         "fill-opacity": 0.5
       }
-    });
+    };
+
+    getMap().addLayer(circleLayer);
+    layers.push(circleLayer);
   }
 
   export function reset(duration, isGameOver) {
@@ -177,6 +185,31 @@
     });
   }
 
+  export function nextRound() {
+    // remove markers
+    for (let i = 0; i < markers.length; i++) {
+      markers[i].remove();
+    }
+    markers = [];
+
+    // clear circles
+    for (let i = 0; i < layers.length; i++) {
+      getMap().removeLayer(layers[i].id);
+      getMap().removeSource(layers[i].id);
+    }
+    layers = [];
+
+    // reset guesses
+    lights.resetForNextRound();
+
+    // pick new city
+    city = cities.getRandomCity();
+    targetLocation = [city.lng, city.lat];
+
+    // reset map position
+    reset(null, false);
+  }
+
   let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 19 : 0
 </script>
 
@@ -187,7 +220,7 @@
   bind:this={mapComponent} 
   on:click={click}
   on:ready={ready}
-  options={{ touchZoomRotate: false }}>
+  options={{ touchZoomRotate: false, doubleClickZoom: false }}>
   </Map>
   <!-- style='mapbox://styles/mapbox/light-v10'  -->
 </div>
