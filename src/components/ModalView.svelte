@@ -29,7 +29,7 @@
   export function shareResult() {
     const shareData = {
       title: 'Searchle',
-      text: `I scored ${lights.getTotalScore()}`,
+      text: `I scored ${lights.getScore()}`,
     };
     navigator.share(shareData)
       .then(() => console.log('Shared successfully'))
@@ -37,7 +37,7 @@
   }
 
   export function copyResult() {
-    let result = `Searchle ${lights.getTotalScore()}pts\n\n`;
+    let result = `Searchle ${lights.getScore()}pts\n\n`;
     result += lights.getGuessesGridAsEmoji();
     alert(result);
   }
@@ -49,7 +49,7 @@
     <br>
     <b>Guess the location in {lights.maxGuesses} tries</b>
     <ul>
-      <li>The location is a city in the US</li>
+      <li>The location is a city in the contiguous US</li>
       <li>Your marker color reflects how far away you are</li>
       <li>The compass will activate to help you</li>
     </ul>

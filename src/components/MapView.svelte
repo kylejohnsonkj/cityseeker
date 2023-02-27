@@ -15,7 +15,7 @@
   const _markersSaved = localStorage.getItem('markersSaved');
   export const markersSaved = writable(JSON.parse(_markersSaved) || []);
   markersSaved.subscribe((value) => {
-    console.log(value);
+    // console.log(value);
     localStorage.setItem('markersSaved', JSON.stringify(value));
   });
 
@@ -38,24 +38,33 @@
   let targetLocation;
   let defaultZoom;
 
-  function ready() {
-    city = cities.getRandomCity();
+  function updateCity() {
+    city = cities.getCurrentCity();
     targetLocation = [city.lng, city.lat];
+  }
+
+  function ready() {
+    updateCity();
+
     getMap().fitBounds(bounds, { animate: false });
     defaultZoom = getMap().getZoom();
 
-    if (lights.getCurrentGuess() != 0) {
-      // restore markers
-      for (let i = 0; i < $markersSaved.length; i++) {
-        addMarker($markersSaved[i].guessLocation, $markersSaved[i].guess, false);
-      }
-      // restore circles
-      if (lights.getRoundOver()) {
-        addCircle(2); // red
-        addCircle(3); // orange
-        addCircle(4); // yellow
-        addCircle(5); // green
-      }
+    if (lights.shouldResetMap()) {
+      $markersSaved = [];
+      lights.setRoundOver(false);
+    }
+
+    // restore markers
+    for (let i = 0; i < $markersSaved.length; i++) {
+      addMarker($markersSaved[i].guessLocation, $markersSaved[i].guess, false);
+    }
+
+    // restore circles
+    if (lights.getRoundOver()) {
+      addCircle(2); // red
+      addCircle(3); // orange
+      addCircle(4); // yellow
+      addCircle(5); // green
     }
   }
 
@@ -104,7 +113,7 @@
       addCircle(4); // yellow
       addCircle(5); // green
 
-      lights.setRoundOver();
+      lights.setRoundOver(true);
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
       reset(2000, true);
     } else {
@@ -228,12 +237,11 @@
     }
     layers = [];
 
+    // pick new city
+    updateCity();
+
     // reset guesses
     lights.resetForNextRound();
-
-    // pick new city
-    city = cities.getRandomCity();
-    targetLocation = [city.lng, city.lat];
 
     // reset map position
     reset(null, false);
@@ -243,7 +251,7 @@
 </script>
 
 <div class="map" style="height: {height + extraHeight - 208}px">
-  <Cities bind:this={cities} />
+  <Cities bind:this={cities} {lights} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
   bind:this={mapComponent} 

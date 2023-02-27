@@ -8,23 +8,24 @@
   const _guessesGrid = localStorage.getItem('guessesGrid');
   export const guessesGrid = writable(JSON.parse(_guessesGrid) || createGrid());
   guessesGrid.subscribe((value) => {
-    console.log(value);
+    // console.log(value);
     localStorage.setItem('guessesGrid', JSON.stringify(value));
   });
+  console.table($guessesGrid);
 
   const _isRoundOver = localStorage.getItem('isRoundOver');
-  export const isRoundOver = writable(_isRoundOver || false)
+  export const isRoundOver = writable(_isRoundOver || 'false')
   isRoundOver.subscribe((value) => {
-    console.log("isRoundOver: " + value);
+    // console.log("isRoundOver: " + value);
     localStorage.setItem('isRoundOver', value);
   });
 
   export function getRoundOver() {
-    return $isRoundOver == 'true';
+    return $isRoundOver === 'true';
   }
 
-  export function setRoundOver() {
-    $isRoundOver = true;
+  export function setRoundOver(value) {
+    $isRoundOver = value ? 'true' : 'false';
   }
 
   let currentRound = getCurrentRound();
@@ -46,8 +47,8 @@
     return $guessesGrid[currentRound];
   }
 
-  function getCurrentRound() {
-    let round = $guessesGrid.findIndex(arr => arr.includes(0));
+  export function getCurrentRound() {
+    let round = $guessesGrid.findIndex(arr => !arr.includes(5) && arr.includes(0));
     if (round == -1) {
       return maxRounds;
     }
@@ -69,7 +70,6 @@
     currentGuess = 0;
     currentRound++;
     guesses = $guessesGrid[currentRound];
-    $isRoundOver = false;
   }
 
   export function getGuessesGridAsEmoji() {
@@ -115,6 +115,9 @@
   }
 
   export function makeGuess(guess) {
+    if (currentGuess == 0) {
+      setRoundOver(false);
+    }
     guesses[currentGuess] = guess;
     $guessesGrid[currentRound] = guesses;
     currentGuess++;
@@ -157,6 +160,10 @@
   export function isBestGuessSoFar(guess) {
     let currentGuesses = guesses.filter(g => g != 0); // all non-zero guesses
     return currentGuesses.filter(g => guess <= g).length == 1;
+  }
+
+  export function shouldResetMap() {
+    return currentRound == 0 && currentGuess == 0 && getRoundOver();
   }
 </script>
 
