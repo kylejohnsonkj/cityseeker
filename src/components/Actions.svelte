@@ -11,6 +11,7 @@
 
 <div class="actions">
   <Button type="compass" on:click={map.reset(750, false)} bind:this={compass} {map}/>
+  <div class="round">1/5</div>
   <div class="spacer" />
   <Button type="minus" on:click={map.zoomOut} />
   <Button type="plus" on:click={map.zoomIn} />
@@ -28,5 +29,9 @@
   }
   .actions > * {
     padding: 10px;
+  }
+  .round {
+    margin-left: 10px;
+    font-size: 1.25em;
   }
 </style>

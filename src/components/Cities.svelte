@@ -11,7 +11,16 @@
     const decoder = new TextDecoder('utf-8');
     const csv = decoder.decode(result.value);
     const { data } = Papa.parse(csv, { header: true });
-    return data.map(row => ({
+    const validStates = [
+      'AL', 'AZ', 'AR', 'CA', 'CO', 'CT', 'DE', 'FL', 'GA', 'ID', 'IL', 'IN', 'IA', 'KS', 'KY', 'LA',
+      'ME', 'MD', 'MA', 'MI', 'MN', 'MS', 'MO', 'MT', 'NE', 'NV', 'NH', 'NJ', 'NM', 'NY', 'NC', 'ND',
+      'OH', 'OK', 'OR', 'PA', 'RI', 'SC', 'SD', 'TN', 'TX', 'UT', 'VT', 'VA', 'WA', 'WV', 'WI', 'WY'
+    ];
+    const filteredData = data.filter(row => {
+      return validStates.includes(row.state_id);
+    });
+
+    return filteredData.map(row => ({
       city: String(row.city),
       state: String(row.state_id),
       population: parseFloat(row.population),
