@@ -5,6 +5,8 @@
   export const maxGuesses = 8;
   export const winAccuracy = 5;
 
+  export let map;
+
   const _guessesGrid = localStorage.getItem('guessesGrid');
   export const guessesGrid = writable(JSON.parse(_guessesGrid) || createGrid());
   guessesGrid.subscribe((value) => {
@@ -117,6 +119,7 @@
   export function makeGuess(guess) {
     if (currentGuess == 0) {
       setRoundOver(false);
+      map.clearSavedMarkers();
     }
     guesses[currentGuess] = guess;
     $guessesGrid[currentRound] = guesses;
@@ -163,7 +166,7 @@
   }
 
   export function shouldResetMap() {
-    return currentRound == 0 && currentGuess == 0 && getRoundOver();
+    return currentRound == 0 && currentGuess == 0;
   }
 </script>
 

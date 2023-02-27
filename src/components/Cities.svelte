@@ -8,7 +8,10 @@
   let cities;
 
   export function getCurrentCity() {
-    const round = lights.getCurrentRound();
+    let round = lights.getCurrentRound();
+    if (!lights.hasNextRound()) {
+      round -= 1;
+    }
     return cities[round];
   }
 

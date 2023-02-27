@@ -19,7 +19,7 @@
 
 <main>
 	<Nav {modal} />
-	<Lights bind:this={lights} />
+	<Lights bind:this={lights} {map} />
 	<MapView bind:this={map} {height} {lights} {modal} {actions} />
 	<Actions bind:this={actions} {map} />
 	<ModalView bind:this={modal} {lights} {map} />
