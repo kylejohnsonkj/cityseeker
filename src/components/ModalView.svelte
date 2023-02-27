@@ -81,7 +81,7 @@
         {#if lights.didFail()}
           <span class="penalty">(+2 penalty)</span>
         {/if}
-        <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getTotalScore()}</b></div>
+        <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getScore()}</b></div>
       </div>
       {#if lights.hasNextRound()}
         <Button text="Next Round" on:click={nextRound} />

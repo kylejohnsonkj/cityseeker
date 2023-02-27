@@ -2,6 +2,7 @@
   import Cities from './Cities.svelte';
   import { Map } from '@beyonk/svelte-mapbox';
   import * as turf from '@turf/turf';
+  import { writable } from "svelte/store";
 
   export let height;
   export let lights;
@@ -10,6 +11,14 @@
   
   let cities;
   let mapComponent;
+
+  const _markersSaved = localStorage.getItem('markersSaved');
+  export const markersSaved = writable(JSON.parse(_markersSaved) || []);
+  markersSaved.subscribe((value) => {
+    console.log(value);
+    localStorage.setItem('markersSaved', JSON.stringify(value));
+  });
+
   let markers = [];
   let layers = [];
 
@@ -34,6 +43,20 @@
     targetLocation = [city.lng, city.lat];
     getMap().fitBounds(bounds, { animate: false });
     defaultZoom = getMap().getZoom();
+
+    if (lights.getCurrentGuess() != 0) {
+      // restore markers
+      for (let i = 0; i < $markersSaved.length; i++) {
+        addMarker($markersSaved[i].guessLocation, $markersSaved[i].guess, false);
+      }
+      // restore circles
+      if (lights.getRoundOver()) {
+        addCircle(2); // red
+        addCircle(3); // orange
+        addCircle(4); // yellow
+        addCircle(5); // green
+      }
+    }
   }
 
   function click(event) {
@@ -56,7 +79,7 @@
     const guessAccuracy = lights.getGuessAccuracy(milesAway);
     const guess = lights.guessMap[guessAccuracy];
 
-    addMarker(guessLocation, milesAway, guess);
+    addMarker(guessLocation, guess, true);
 
     // if (marker === undefined) {
     //   var el = document.createElement('div');
@@ -81,7 +104,7 @@
       addCircle(4); // yellow
       addCircle(5); // green
 
-      lights.saveGuesses();
+      lights.setRoundOver();
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
       reset(2000, true);
     } else {
@@ -89,7 +112,7 @@
     }
   }
 
-  function addMarker(guessLocation, milesAway, guess) {
+  function addMarker(guessLocation, guess, isUserInitiated) {
     var el = document.createElement('div');
     el.className = 'marker';
     el.style.fontSize = '30px';
@@ -101,6 +124,11 @@
     marker.addTo(getMap());
 
     markers.push(marker);
+
+    if (isUserInitiated) {
+      $markersSaved.push({guessLocation, guess});  // for restoring from local storage
+      $markersSaved = $markersSaved;
+    }
   }
 
   function setCompassAngle(guessLocation, dist, guess) {
@@ -191,6 +219,7 @@
       markers[i].remove();
     }
     markers = [];
+    $markersSaved = [];
 
     // clear circles
     for (let i = 0; i < layers.length; i++) {

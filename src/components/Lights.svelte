@@ -5,20 +5,33 @@
   export const maxGuesses = 8;
   export const winAccuracy = 5;
 
-  const stored = localStorage.getItem('content');
-  export const guessesGrid = writable(JSON.parse(stored) || createGrid());
-  
+  const _guessesGrid = localStorage.getItem('guessesGrid');
+  export const guessesGrid = writable(JSON.parse(_guessesGrid) || createGrid());
   guessesGrid.subscribe((value) => {
     console.log(value);
-    localStorage.setItem('content', JSON.stringify(value))
+    localStorage.setItem('guessesGrid', JSON.stringify(value));
   });
+
+  const _isRoundOver = localStorage.getItem('isRoundOver');
+  export const isRoundOver = writable(_isRoundOver || false)
+  isRoundOver.subscribe((value) => {
+    console.log("isRoundOver: " + value);
+    localStorage.setItem('isRoundOver', value);
+  });
+
+  export function getRoundOver() {
+    return $isRoundOver == 'true';
+  }
+
+  export function setRoundOver() {
+    $isRoundOver = true;
+  }
 
   let currentRound = getCurrentRound();
   let guesses = getGuesses();
   let currentGuess = getCurrentGuess();
-  let score = getScore();
 
-  function getScore() {
+  export function getScore() {
     return $guessesGrid.reduce((score, guesses) => {
       const guessesCount = guesses.filter(num => num !== 0).length;
       const penalty = guesses[guesses.length - 1] !== 0 && guesses[guesses.length - 1] !== 5 ? 2 : 0;
@@ -35,7 +48,13 @@
 
   function getCurrentRound() {
     let round = $guessesGrid.findIndex(arr => arr.includes(0));
-    return round != -1 ? round : maxRounds;
+    if (round == -1) {
+      return maxRounds;
+    }
+    if (round > 0 && getRoundOver()) {
+      round -= 1;
+    }
+    return round;
   }
 
   function createGrid() {
@@ -50,10 +69,7 @@
     currentGuess = 0;
     currentRound++;
     guesses = $guessesGrid[currentRound];
-  }
-
-  export function saveGuesses() {
-    increaseScore(currentGuess);
+    $isRoundOver = false;
   }
 
   export function getGuessesGridAsEmoji() {
@@ -74,17 +90,6 @@
 
   export function hasNextRound() {
     return getCurrentRound() != maxRounds;
-  }
-
-  export function increaseScore(newScore) {
-    score += newScore;
-    if (didFail()) {
-      score += 2; // add penalty
-    }
-  }
-
-  export function getTotalScore() {
-    return score;
   }
 
   export function getRoundScore() {
