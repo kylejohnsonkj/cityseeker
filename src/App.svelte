@@ -5,14 +5,8 @@
   import Actions from "./components/Actions.svelte";
 	import ModalView from "./components/ModalView.svelte";
 
-	import { onMount } from 'svelte';
-
 	let lights, map, actions, modal;
 	let height;
-
-	onMount(async () => {
-		modal.toggleHelp();
-	});
 </script>
 
 <svelte:window bind:innerHeight={height}/>
@@ -24,5 +18,5 @@
 	{#if lights !== undefined}
 		<Actions bind:this={actions} {lights} {map} />
 	{/if}
-	<ModalView bind:this={modal} {lights} {map} />
+	<ModalView bind:this={modal} {lights} {map} {actions} />
 </main>

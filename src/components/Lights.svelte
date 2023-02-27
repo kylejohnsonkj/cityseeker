@@ -109,6 +109,7 @@
     guesses[currentGuess] = guess;
     $guessesGrid[currentRound] = guesses;
     currentGuess++;
+    actions.updateScore(getScore());
   };
 
   export function getGuessAccuracy(milesAway) {
@@ -150,7 +151,7 @@
     return currentGuesses.filter(g => guess <= g).length == 1;
   }
 
-  export function shouldResetMap() {
+  export function isStartOfGame() {
     return currentRound == 0 && currentGuess == 0;
   }
 </script>

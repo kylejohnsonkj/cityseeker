@@ -5,9 +5,14 @@
   export let lights;
 
   let currentRound = lights._getCurrentRound();
+  let score = lights.getScore();
 
-  export function updateCurrentRound(round) {
-    currentRound = round;
+  export function updateCurrentRound(newRound) {
+    currentRound = newRound;
+  }
+  
+  export function updateScore(newScore) {
+    score = newScore;
   }
 
   export function getCompass() {
@@ -19,7 +24,7 @@
   <Button type="compass" on:click={map.reset(750, false)} bind:this={compass} {map}/>
   <div class="info">
     <div class="round">Round {currentRound + 1} of {lights.maxRounds}</div>
-    <div class="score">30pts</div>
+    <div class="score">{score}pts</div>
   </div>
   <div class="spacer" />
   <Button type="minus" on:click={map.zoomOut} />

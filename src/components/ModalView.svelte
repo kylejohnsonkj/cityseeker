@@ -9,6 +9,7 @@
 
   export let map;
   export let lights;
+  export let actions;
 
 	export function toggleHelp() {
 		showHelp = !showHelp;
@@ -23,6 +24,7 @@
     showGameOver = true;
     city = targetCity;
     didWin = targetDidWin;
+    actions.updateScore(lights.getScore());
   }
 
   // package.json --http2 --key key.pem --cert cert.pem

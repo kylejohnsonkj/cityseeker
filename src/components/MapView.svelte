@@ -48,8 +48,12 @@
     defaultZoom = getMap().getZoom();
     updateCity();
 
-    if (lights.shouldResetMap()) {
+    if (lights.isStartOfGame()) {
       clearSavedMarkers();
+      modal.toggleHelp();
+    } else if (lights.isGameOver()) {
+      let didWin = lights.getLatestGuessAccuracy() == lights.winAccuracy;
+      modal.gameOver(city, didWin);
     }
 
     // restore markers
