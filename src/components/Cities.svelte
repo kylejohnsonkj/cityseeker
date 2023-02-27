@@ -7,12 +7,9 @@
   export let lights;
   let cities;
 
-  export function getCurrentCity() {
-    let round = lights.getCurrentRound();
-    if (!lights.hasNextRound()) {
-      round -= 1;
-    }
-    return cities[round];
+  export function getCurrentCity(currentRound) {
+    let round = currentRound ?? lights.getCurrentRound();
+    return round == lights.maxRounds ? cities[round - 1] : cities[round];
   }
 
   const validStates = [

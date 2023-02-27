@@ -44,14 +44,13 @@
   }
 
   function ready() {
-    if (lights.shouldResetMap()) {
-      lights.setRoundOver(false);
-      clearSavedMarkers();
-    }
-    updateCity();
-
     getMap().fitBounds(bounds, { animate: false });
     defaultZoom = getMap().getZoom();
+    updateCity();
+
+    if (lights.shouldResetMap()) {
+      clearSavedMarkers();
+    }
 
     // restore markers
     for (let i = 0; i < $markersSaved.length; i++) {
@@ -59,7 +58,7 @@
     }
 
     // restore circles
-    if (lights.getRoundOver()) {
+    if (lights.getCurrentGuess() == lights.maxGuesses) {
       addCircle(2); // red
       addCircle(3); // orange
       addCircle(4); // yellow
@@ -113,7 +112,6 @@
       addCircle(4); // yellow
       addCircle(5); // green
 
-      lights.setRoundOver(true);
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
       reset(2000, true);
     } else {
@@ -208,7 +206,6 @@
   }
 
   export function zoomIn() {
-    console.log('zoom in');
     mapComponent.flyTo({
       center: getMap().getCenter(),
       zoom: getMap().getZoom() + 1
@@ -240,11 +237,8 @@
     }
     layers = [];
 
-    // reset guesses
-    lights.resetForNextRound();
-
-    // pick new city
-    updateCity();
+    const currentRound = lights.resetForNextRound();
+    updateCity(currentRound);
 
     // reset map position
     reset(null, false);

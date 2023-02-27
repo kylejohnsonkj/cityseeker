@@ -15,21 +15,6 @@
   });
   console.table($guessesGrid);
 
-  const _isRoundOver = localStorage.getItem('isRoundOver');
-  export const isRoundOver = writable(_isRoundOver || 'false')
-  isRoundOver.subscribe((value) => {
-    // console.log("isRoundOver: " + value);
-    localStorage.setItem('isRoundOver', value);
-  });
-
-  export function getRoundOver() {
-    return $isRoundOver === 'true';
-  }
-
-  export function setRoundOver(value) {
-    $isRoundOver = value ? 'true' : 'false';
-  }
-
   let currentRound = getCurrentRound();
   let guesses = getGuesses();
   let currentGuess = getCurrentGuess();
@@ -50,14 +35,9 @@
   }
 
   export function getCurrentRound() {
-    let round = $guessesGrid.findIndex(arr => !arr.includes(5) && arr.includes(0));
-    if (round == -1) {
-      return maxRounds;
-    }
-    if (round > 0 && getRoundOver()) {
-      round -= 1;
-    }
-    return round;
+    let round = $guessesGrid.findLastIndex(guesses => guesses[0] !== 0);
+    let nextRound = $guessesGrid.findIndex(guesses => guesses[0] == 0);
+    return round !== -1 ? round : nextRound !== -1 ? nextRound : maxRounds;
   }
 
   function createGrid() {
@@ -72,6 +52,7 @@
     currentGuess = 0;
     currentRound++;
     guesses = $guessesGrid[currentRound];
+    return currentRound;
   }
 
   export function getGuessesGridAsEmoji() {
@@ -91,7 +72,7 @@
   }
 
   export function hasNextRound() {
-    return getCurrentRound() != maxRounds;
+    return getCurrentRound() < maxRounds - 1;
   }
 
   export function getRoundScore() {
@@ -118,7 +99,6 @@
 
   export function makeGuess(guess) {
     if (currentGuess == 0) {
-      setRoundOver(false);
       map.clearSavedMarkers();
     }
     guesses[currentGuess] = guess;
