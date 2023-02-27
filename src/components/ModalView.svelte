@@ -38,7 +38,7 @@
 
   export function copyResult() {
     let result = `Searchle ${lights.getTotalScore()}pts\n\n`;
-    result += lights.getAllGuessesAsEmoji();
+    result += lights.getGuessesGridAsEmoji();
     alert(result);
   }
 </script>

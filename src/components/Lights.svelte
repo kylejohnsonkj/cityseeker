@@ -1,31 +1,65 @@
 <script>
+  import { writable } from "svelte/store";
+
+  const maxRounds = 5;
   export const maxGuesses = 8;
   export const winAccuracy = 5;
 
-  let currentRound = 1;
-  const maxRounds = 5;
+  const stored = localStorage.getItem('content');
+  export const guessesGrid = writable(JSON.parse(stored) || createGrid());
+  
+  guessesGrid.subscribe((value) => {
+    console.log(value);
+    localStorage.setItem('content', JSON.stringify(value))
+  });
 
-  let allGuesses = [];
-  let guesses = new Array(maxGuesses).fill(0);
-  let currentGuess = 0;
-  let score = 0;
+  let currentRound = getCurrentRound();
+  let guesses = getGuesses();
+  let currentGuess = getCurrentGuess();
+  let score = getScore();
+
+  function getScore() {
+    return $guessesGrid.reduce((score, guesses) => {
+      const guessesCount = guesses.filter(num => num !== 0).length;
+      const penalty = guesses[guesses.length - 1] !== 0 && guesses[guesses.length - 1] !== 5 ? 2 : 0;
+      return score + guessesCount + penalty;
+    }, 0);
+  }
+
+  function getGuesses() {
+    if (currentRound == maxRounds) {
+      return $guessesGrid[maxRounds - 1];
+    }
+    return $guessesGrid[currentRound];
+  }
+
+  function getCurrentRound() {
+    let round = $guessesGrid.findIndex(arr => arr.includes(0));
+    return round != -1 ? round : maxRounds;
+  }
+
+  function createGrid() {
+    const grid = [];
+    for (let y = 0; y < maxRounds; y++) {
+      grid.push(new Array(maxGuesses).fill(0));
+    }
+    return grid;
+  }
 
   export function resetForNextRound() {
-    guesses = new Array(maxGuesses).fill(0);
     currentGuess = 0;
     currentRound++;
+    guesses = $guessesGrid[currentRound];
   }
 
   export function saveGuesses() {
-    allGuesses.push(guesses);
     increaseScore(currentGuess);
   }
 
-  export function getAllGuessesAsEmoji() {
+  export function getGuessesGridAsEmoji() {
     let allEmojis = "";
-    console.log(allGuesses);
     for (let i = 0; i < maxRounds; i++) {
-      allEmojis += getGuessesAsEmoji(allGuesses[i]) + "\n";
+      allEmojis += getGuessesAsEmoji($guessesGrid[i]) + "\n";
     }
     return allEmojis;
   }
@@ -39,7 +73,7 @@
   }
 
   export function hasNextRound() {
-    return currentRound != maxRounds;
+    return getCurrentRound() != maxRounds;
   }
 
   export function increaseScore(newScore) {
@@ -77,6 +111,7 @@
 
   export function makeGuess(guess) {
     guesses[currentGuess] = guess;
+    $guessesGrid[currentRound] = guesses;
     currentGuess++;
   };
 
@@ -95,7 +130,11 @@
   }
 
   export function getCurrentGuess() {
-    return currentGuess;
+    if (currentRound == maxRounds) {
+      return maxGuesses;
+    }
+    const index = $guessesGrid[currentRound].indexOf(0);
+    return index != -1 ? index : maxGuesses;
   }
 
   export function getLatestGuessAccuracy() {
@@ -103,7 +142,7 @@
   }
 
   export function isGameOver() {
-    return currentGuess == maxGuesses || guesses[currentGuess - 1] == winAccuracy
+    return currentRound == maxRounds || currentGuess == maxGuesses || guesses[currentGuess - 1] == winAccuracy
   }
 
   export function didFail() {
