@@ -72,7 +72,7 @@
   <Modal on:close="{() => showGameOver = false}">
     <h2 slot="header">{didWin ? "City Found!" : lights.hasNextRound() ? "Limit Reached" : "Game Over"}</h2>
     <br>
-    <p>The city was {city.city}, {city.state}</p>
+    <p>The city was {city.city}, {city.state_id}</p>
     <p>Population: {city.population.toLocaleString()}</p>
     <br>
     <div class="bottom">

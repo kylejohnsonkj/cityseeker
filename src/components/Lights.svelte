@@ -1,7 +1,7 @@
 <script>
   import { writable } from "svelte/store";
 
-  const maxRounds = 5;
+  export const maxRounds = 5;
   export const maxGuesses = 8;
   export const winAccuracy = 5;
 
