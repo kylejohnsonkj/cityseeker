@@ -6,6 +6,7 @@
   export const winAccuracy = 5;
 
   export let map;
+  export let actions;
 
   const _guessesGrid = localStorage.getItem('guessesGrid');
   export const guessesGrid = writable(JSON.parse(_guessesGrid) || createGrid());
@@ -40,6 +41,10 @@
     return round !== -1 ? round : nextRound !== -1 ? nextRound : maxRounds;
   }
 
+  export function _getCurrentRound() {
+    return currentRound;
+  }
+
   function createGrid() {
     const grid = [];
     for (let y = 0; y < maxRounds; y++) {
@@ -52,7 +57,7 @@
     currentGuess = 0;
     currentRound++;
     guesses = $guessesGrid[currentRound];
-    return currentRound;
+    actions.updateCurrentRound(currentRound);
   }
 
   export function getGuessesGridAsEmoji() {

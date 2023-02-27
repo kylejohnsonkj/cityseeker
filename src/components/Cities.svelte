@@ -7,8 +7,8 @@
   export let lights;
   let cities;
 
-  export function getCurrentCity(currentRound) {
-    let round = currentRound ?? lights.getCurrentRound();
+  export function getCurrentCity() {
+    let round = lights._getCurrentRound();
     return round == lights.maxRounds ? cities[round - 1] : cities[round];
   }
 

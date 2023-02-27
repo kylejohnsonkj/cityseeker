@@ -237,8 +237,10 @@
     }
     layers = [];
 
-    const currentRound = lights.resetForNextRound();
-    updateCity(currentRound);
+    // update round and guesses
+    lights.resetForNextRound();
+
+    updateCity();
 
     // reset map position
     reset(null, false);

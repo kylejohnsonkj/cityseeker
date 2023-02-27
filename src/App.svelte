@@ -19,8 +19,10 @@
 
 <main>
 	<Nav {modal} />
-	<Lights bind:this={lights} {map} />
+	<Lights bind:this={lights} {map} {actions} />
 	<MapView bind:this={map} {height} {lights} {modal} {actions} />
-	<Actions bind:this={actions} {map} />
+	{#if lights !== undefined}
+		<Actions bind:this={actions} {lights} {map} />
+	{/if}
 	<ModalView bind:this={modal} {lights} {map} />
 </main>
