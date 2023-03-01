@@ -1,4 +1,5 @@
 <script>
+	export let title;
 	export let modal;
 </script>
 
@@ -6,7 +7,7 @@
   <button on:click={modal.toggleHelp}>
     <img src="images/help.svg" alt="Help">
   </button>
-  <div class="title">Searchle</div>
+  <div class="title">{title}</div>
   <button>
     <img src="images/stats.svg" alt="Stats">
   </button>

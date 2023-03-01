@@ -12,7 +12,7 @@
 <svelte:window bind:innerHeight={height}/>
 
 <main>
-	<Nav {modal} />
+	<Nav title="Searchle" {modal} />
 	<Lights bind:this={lights} {map} {actions} />
 	<MapView bind:this={map} {height} {lights} {modal} {actions} />
 	{#if lights !== undefined}

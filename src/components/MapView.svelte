@@ -62,7 +62,7 @@
     }
 
     // restore circles
-    if (lights.getCurrentGuess() == lights.maxGuesses) {
+    if (lights.isGameOver()) {
       addCircle(2); // red
       addCircle(3); // orange
       addCircle(4); // yellow
@@ -260,7 +260,7 @@
   bind:this={mapComponent} 
   on:click={click}
   on:ready={ready}
-  options={{ touchZoomRotate: false, doubleClickZoom: false }}>
+  options={{ /*touchZoomRotate: false,*/ doubleClickZoom: false }}>
   </Map>
   <!-- style='mapbox://styles/mapbox/light-v10'  -->
 </div>
