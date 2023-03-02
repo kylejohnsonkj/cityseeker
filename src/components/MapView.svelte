@@ -227,7 +227,7 @@
     $markersSaved = [];
   }
 
-  export function nextRound() {
+  export function nextRound(isRestart) {
     // remove markers
     for (let i = 0; i < markers.length; i++) {
       markers[i].remove();
@@ -241,8 +241,12 @@
     }
     layers = [];
 
-    // update round and guesses
-    lights.resetForNextRound();
+    if (isRestart) {
+      clearSavedMarkers();
+    } else {
+      // update round and guesses
+      lights.resetForNextRound();
+    }
 
     updateCity();
 

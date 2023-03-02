@@ -28,7 +28,7 @@
   }
 
   // package.json --http2 --key key.pem --cert cert.pem
-  export function shareResult() {
+  function shareResult() {
     const shareData = {
       title: 'Searchle',
       text: `I scored ${lights.getScore()}`,
@@ -38,10 +38,15 @@
       .catch((error) => console.log(`Error sharing: ${error}`));
   }
 
-  export function copyResult() {
+  function copyResult() {
     let result = `Searchle ${lights.getScore()}pts\n\n`;
     result += lights.getGuessesGridAsEmoji();
     alert(result);
+  }
+
+  function restartGame() {
+    lights.restartGame();
+    showGameOver = false;
   }
 </script>
 
@@ -91,7 +96,10 @@
         {#if navigator.share}
           <Button text="Share" on:click={shareResult} />
         {:else}
-          <Button text="Copy" on:click={copyResult} />
+          <div>
+            <Button text="Copy" on:click={copyResult} />
+            <Button text="Restart Game" on:click={restartGame} />
+          </div>
         {/if}
       {/if}
     </div>

@@ -20,6 +20,22 @@
   let guesses = getGuesses();
   let currentGuess = getCurrentGuess();
 
+  if ($guessesGrid.length != maxRounds || $guessesGrid[0].length != maxGuesses) {
+    restartGame();
+  }
+  
+  // for development
+  export function restartGame() {
+    $guessesGrid = createGrid();
+    currentRound = getCurrentRound();
+    guesses = getGuesses();
+    currentGuess = getCurrentGuess();
+    map.nextRound(true);
+    actions.updateCurrentRound(currentRound);
+    actions.updateScore(getScore());
+    console.log("restarted game");
+  }
+
   export function getScore() {
     return $guessesGrid.reduce((score, guesses) => {
       const guessesCount = guesses.filter(num => num !== 0).length;
