@@ -31,6 +31,11 @@
       });
   }
 
+  function getCurrentDate() {
+    let date = new Date().toISOString()
+    return date.substring(0, date.indexOf('T'));
+  }
+
   async function getCitiesForToday() {
     try {
       const rows = await parseData();
@@ -41,9 +46,7 @@
       });
 
       // use today's date as the seed
-      let date = new Date().toISOString()
-      date = date.substring(0, date.indexOf('T'));
-      const rng = seedrandom(date);
+      const rng = seedrandom(getCurrentDate());
 
       // sort by seed
       filteredRows = mergeSort(filteredRows, () => rng() - 0.5);

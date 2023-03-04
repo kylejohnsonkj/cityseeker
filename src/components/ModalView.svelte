@@ -56,9 +56,9 @@
     <br>
     <b>Guess the location in {lights.maxGuesses} tries</b>
     <ul>
-      <li>The location is a city in the contiguous US</li>
+      <li>The location is a city in the 48 states</li>
       <li>Your marker color reflects how far away you are</li>
-      <li>The compass will activate to help you</li>
+      <li>Use the compass to your advantage</li>
     </ul>
     <br>
     <h3>Legend</h3>

@@ -19,9 +19,12 @@
   const size = getSize();
   const left = type == "plus" ? 20 : 0;
 
+  let textClass = text != null ? "text" : "";
+
   let buttonSize = type == "close" ? 30 : 50;
   let buttonClass = small ? "small" : "";
-  let textClass = text != null ? "text" : "";
+
+  let compassSize = 55;
   let compassClass = type == "compass" ? "compass" : "";
 
   function getSize() {
@@ -34,7 +37,7 @@
   }
 </script>
 
-<button class="{buttonClass} {textClass} {compassClass} {disabledClass}" style="--size:{buttonSize}px; margin-left:{left}px" on:click>
+<button class="{buttonClass} {textClass} {compassClass} {disabledClass}" style="--size:{buttonSize}px; --compassSize:{compassSize}px; margin-left:{left}px" on:click>
   {#if text != null}
      {text}
   {:else}
@@ -66,6 +69,8 @@
     background-color: white;
   }
   button.compass {
+    width: var(--compassSize);
+    height: var(--compassSize);
     background: none;
     transition: opacity 0.7s cubic-bezier(0.175, 0.885, 0.5, 1.8);
   }
@@ -76,6 +81,8 @@
     margin-top: 2px;
   }
   button.compass img {
+    width: var(--compassSize);
+    height: var(--compassSize);
     margin-top: 0px;
     transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.5, 1.8);
     transition-delay: 0.25s;

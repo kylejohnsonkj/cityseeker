@@ -299,8 +299,8 @@
   }
   :global(.compass) {
     position: absolute;
-    top: 10px;
-    left: 10px;
+    top: 12px;
+    left: 12px;
   }
 </style>
 

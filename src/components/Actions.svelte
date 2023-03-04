@@ -5,6 +5,7 @@
 
   let currentRound = lights._getCurrentRound();
   let score = lights.getScore();
+  let zeroPtsClass;
 
   export function updateCurrentRound(newRound) {
     currentRound = newRound;
@@ -12,14 +13,16 @@
   
   export function updateScore(newScore) {
     score = newScore;
+    // TODO: green < 40, orange < 50, red = 50
+    zeroPtsClass = score == 0 ? "zeroPts" : "";
   }
 </script>
 
 <div class="actions">
   <Button type="restart" on:click={map.reset(750, false)}/>
   <div class="info">
-    <div class="round">Round {currentRound + 1} of {lights.maxRounds}</div>
-    <div class="score">{score}pts</div>
+    <div class="round">Round {currentRound + 1} / {lights.maxRounds}</div>
+    <div class="score {zeroPtsClass}">{score}pts</div>
   </div>
   <div class="spacer" />
   <Button type="minus" on:click={map.zoomOut} />
@@ -48,5 +51,8 @@
   .score {
     font-weight: bold;
     color: green;
+  }
+  .score.zeroPts {
+    color: black;
   }
 </style>
