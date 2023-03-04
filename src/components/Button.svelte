@@ -7,11 +7,7 @@
   let disabledClass = "disabled";
 
   export function setAngle(newAngle) {
-    if (newAngle == 0) {
-      disabledClass = "disabled";
-      return;
-    }
-    disabledClass = "";
+    disabledClass = newAngle == 0 ? "disabled" : "";
     angle = closestEquivalentAngle(angle, newAngle);
   }
 
@@ -38,11 +34,11 @@
   }
 </script>
 
-<button class="{buttonClass} {textClass} {compassClass}" style="--size:{buttonSize}px; margin-left:{left}px" on:click>
+<button class="{buttonClass} {textClass} {compassClass} {disabledClass}" style="--size:{buttonSize}px; margin-left:{left}px" on:click>
   {#if text != null}
      {text}
   {:else}
-    <img src="images/{type}.svg" alt="{type}" width="{size}" height="{size}" style="transform: rotate({angle}deg);" class={disabledClass}>
+    <img src="images/{type}.svg" alt="{type}" width="{size}" height="{size}" style="transform: rotate({angle}deg);">
   {/if}
 </button>
 
@@ -71,6 +67,10 @@
   }
   button.compass {
     background: none;
+    transition: opacity 0.7s cubic-bezier(0.175, 0.885, 0.5, 1.8);
+  }
+  button.compass.disabled {
+    opacity: 0;
   }
   button img {
     margin-top: 2px;
@@ -78,10 +78,7 @@
   button.compass img {
     margin-top: 0px;
     transition: transform 0.7s cubic-bezier(0.175, 0.885, 0.5, 1.8);
-    /* animation: rotation 5s infinite linear; */
-  }
-  button.compass img.disabled {
-    opacity: 0.5;
+    transition-delay: 0.25s;
   }
   @media (hover: hover) {
     button:not(.compass):hover {

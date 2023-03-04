@@ -1,5 +1,6 @@
 <script>
   import Cities from './Cities.svelte';
+  import Button from './Button.svelte';
   import { Map } from '@beyonk/svelte-mapbox';
   import * as turf from '@turf/turf';
   import { writable } from "svelte/store";
@@ -7,9 +8,8 @@
   export let height;
   export let lights;
   export let modal;
-  export let actions;
   
-  let cities;
+  let cities, compass;
   let mapComponent;
 
   const _markersSaved = localStorage.getItem('markersSaved');
@@ -37,6 +37,8 @@
   let city;
   let targetLocation;
   let defaultZoom;
+
+  let isReady = false;
 
   function updateCity() {
     city = cities.getCurrentCity();
@@ -68,6 +70,8 @@
       addCircle(4); // yellow
       addCircle(5); // green
     }
+
+    isReady = true;
   }
 
   function click(event) {
@@ -146,7 +150,7 @@
     let angle = 0;
 
     if (lights.isBestGuessSoFar(guess.accuracy)) {
-      actions.getCompass().setAngle(angle);   // disable compass
+      compass.setAngle(angle);   // disable compass
       return
     }
 
@@ -159,7 +163,7 @@
     } else {
       angle = vertDist >= 0 ? -45 /*up*/ : 135 /*down*/;
     }
-    actions.getCompass().setAngle(angle);
+    compass.setAngle(angle);
   }
 
   function addCircle(layer) {
@@ -248,16 +252,18 @@
       lights.resetForNextRound();
     }
 
+    compass.setAngle(0);
+
     updateCity();
 
     // reset map position
     reset(null, false);
   }
 
-  let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 19 : 0
+  let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 14 : 0
 </script>
 
-<div class="map" style="height: {height + extraHeight - 208}px">
+<div class="map" style="height: {height + extraHeight - 212}px">
   <Cities bind:this={cities} {lights} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
@@ -267,12 +273,21 @@
   options={{ /*touchZoomRotate: false,*/ doubleClickZoom: false }}>
   </Map>
   <!-- style='mapbox://styles/mapbox/light-v10'  -->
+  {#if isReady}
+    <Button type="compass" class="compass" on:click={reset(750, false)} bind:this={compass} />
+  {/if}
 </div>
 
 <style>
   .map {
     border-bottom: 1px solid lightgray;
     background-color: gray;
+    position: relative;
+  }
+  :global(.compass) {
+    position: absolute;
+    top: 10px;
+    left: 10px;
   }
 </style>
 

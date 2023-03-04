@@ -14,7 +14,7 @@
 <main>
 	<Nav title="Searchle" {modal} />
 	<Lights bind:this={lights} {map} {actions} />
-	<MapView bind:this={map} {height} {lights} {modal} {actions} />
+	<MapView bind:this={map} {height} {lights} {modal} />
 	{#if lights !== undefined}
 		<Actions bind:this={actions} {lights} {map} />
 	{/if}

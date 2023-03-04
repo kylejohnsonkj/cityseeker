@@ -1,7 +1,6 @@
 <script>
   import Button from "./Button.svelte";
   export let map;
-  export let compass;
   export let lights;
 
   let currentRound = lights._getCurrentRound();
@@ -14,14 +13,10 @@
   export function updateScore(newScore) {
     score = newScore;
   }
-
-  export function getCompass() {
-    return compass;
-  }
 </script>
 
 <div class="actions">
-  <Button type="compass" on:click={map.reset(750, false)} bind:this={compass} {map}/>
+  <Button type="restart" on:click={map.reset(750, false)}/>
   <div class="info">
     <div class="round">Round {currentRound + 1} of {lights.maxRounds}</div>
     <div class="score">{score}pts</div>
