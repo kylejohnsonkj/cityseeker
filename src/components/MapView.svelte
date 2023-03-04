@@ -59,8 +59,10 @@
     }
 
     // restore markers
+    let lastGuessLocation;
     for (let i = 0; i < $markersSaved.length; i++) {
       addMarker($markersSaved[i].guessLocation, $markersSaved[i].guess, false);
+      lastGuessLocation = $markersSaved[i].guessLocation;
     }
 
     // restore circles
@@ -69,6 +71,16 @@
       addCircle(3); // orange
       addCircle(4); // yellow
       addCircle(5); // green
+
+    } else if (lastGuessLocation != null) {
+      setTimeout(() => {
+        // restore compass
+        const guessLocation = [parseFloat(lastGuessLocation[0]).toFixed(4), parseFloat(lastGuessLocation[1]).toFixed(4)];
+        const milesAway = Math.floor(turf.distance(targetLocation, guessLocation, { units: "miles" }));
+        const guessAccuracy = lights.getGuessAccuracy(milesAway);
+        const guess = lights.guessMap[guessAccuracy];
+        setCompassAngle(guessLocation, milesAway, guess);
+      }, 100);
     }
 
     isReady = true;
@@ -121,6 +133,7 @@
       addCircle(5); // green
 
       modal.gameOver(city, guessAccuracy == lights.winAccuracy);
+      compass.setAngle(0);
       reset(2000, true);
     } else {
       setCompassAngle(guessLocation, milesAway, guess);
