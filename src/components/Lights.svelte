@@ -2,7 +2,7 @@
   import { writable } from "svelte/store";
 
   export const maxRounds = 5;
-  export const maxGuesses = 8;
+  export const maxGuesses = 6;
   export const winAccuracy = 5;
 
   export let map;
@@ -186,11 +186,5 @@
     font-size: 2.9em;
     padding: 5px;
     border-bottom: 1px solid lightgray;
-  }
-
-  @media (max-width: 500px) {
-    .lights {
-      font-size: 2.2em;
-    }
   }
 </style>

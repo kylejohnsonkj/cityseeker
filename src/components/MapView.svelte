@@ -8,6 +8,7 @@
   export let height;
   export let lights;
   export let modal;
+  export let actions;
   
   let cities, compass;
   let mapComponent;
@@ -42,6 +43,7 @@
 
   function updateCity() {
     city = cities.getCurrentCity();
+    actions.updateRegion(cities.getRegion());
     targetLocation = [city.lng, city.lat];
   }
 
@@ -272,11 +274,9 @@
     // reset map position
     reset(null, false);
   }
-
-  let extraHeight = window.matchMedia && window.matchMedia('(max-width: 500px)').matches ? 14 : 0
 </script>
 
-<div class="map" style="height: {height + extraHeight - 212}px">
+<div class="map" style="height: {height - 211}px">
   <Cities bind:this={cities} {lights} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 

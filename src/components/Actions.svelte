@@ -5,6 +5,7 @@
 
   let currentRound = lights._getCurrentRound();
   let score = lights.getScore();
+  let region = "";
   let zeroPtsClass;
 
   export function updateCurrentRound(newRound) {
@@ -16,11 +17,16 @@
     // TODO: green < 40, orange < 50, red = 50
     zeroPtsClass = score == 0 ? "zeroPts" : "";
   }
+
+  export function updateRegion(newRegion) {
+    region = newRegion;
+  }
 </script>
 
 <div class="actions">
   <Button type="restart" on:click={map.reset(750, false)}/>
   <div class="info">
+    <div class="region">Region: {region}</div>
     <div class="round">Round {currentRound + 1} / {lights.maxRounds}</div>
     <div class="score {zeroPtsClass}">{score}pts</div>
   </div>
@@ -39,11 +45,11 @@
   .spacer {
     flex: 1;
   }
-  .actions > * {
+  .actions > *:not(.info) {
     padding: 10px;
   }
   .info {
-    margin-left: 10px;
+    margin-left: 20px;
   }
   .round {
     color: var(--text);
