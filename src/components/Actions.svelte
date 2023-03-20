@@ -2,6 +2,7 @@
   import Button from "./Button.svelte";
   export let map;
   export let lights;
+  import { onMount } from 'svelte';
 
   let currentRound = lights._getCurrentRound();
   let score = lights.getScore();
@@ -21,6 +22,11 @@
   export function updateRegion(newRegion) {
     region = newRegion;
   }
+
+  // force score to apply correct coloring on load
+  onMount(async () => {
+    updateScore(score);
+  });
 </script>
 
 <div class="actions">

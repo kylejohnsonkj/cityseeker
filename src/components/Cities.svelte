@@ -1,11 +1,19 @@
 <script>
+  import { writable } from "svelte/store";
+
   import Papa from 'papaparse';
   import seedrandom from 'seedrandom';
-  import { onMount } from 'svelte';
   import { mergeSort } from '../sort'
 
   export let lights;
   let cities;
+
+  const _activeGameDate = localStorage.getItem('activeGameDate');
+  export const activeGameDate = writable(JSON.parse(_activeGameDate) || getCurrentDate());
+  activeGameDate.subscribe((value) => {
+    // console.log(value);
+    localStorage.setItem('activeGameDate', JSON.stringify(value));
+  });
 
   export function getCurrentCity() {
     let round = lights._getCurrentRound();
@@ -50,11 +58,13 @@
   }
 
   function getCurrentDate() {
-    let date = new Date().toISOString()
-    return date.substring(0, date.indexOf('T'));
+    var date = new Date();
+    // date = new Date("2023-03-21T00:00:00");
+    date.setMinutes(date.getMinutes() - date.getTimezoneOffset()); 
+    return date.toISOString().slice(0,10);
   }
 
-  async function getCitiesForToday() {
+  export async function getCitiesForToday() {
     try {
       const rows = await parseData();
 
@@ -63,22 +73,27 @@
         return validStates.includes(row.state_id);
       });
 
+      const date = getCurrentDate();
+      console.log("Game Date: " + date);
+
       // use today's date as the seed
-      const rng = seedrandom(getCurrentDate());
+      const rng = seedrandom(date);
 
       // sort by seed
       filteredRows = mergeSort(filteredRows, () => rng() - 0.5);
 
       // limit cities to match number of rounds
-      return filteredRows.slice(0, lights.maxRounds);
-      
+      cities = filteredRows.slice(0, lights.maxRounds);
+      console.table(cities);
+
+      // reset game at midnight
+      if ($activeGameDate !== getCurrentDate()) {
+        $activeGameDate = date;
+        lights.restartGame();
+      }
+
     } catch (error) {
       console.error(error);
     }
   }
-
-  onMount(async () => {
-		cities = await getCitiesForToday();
-    console.table(cities);
-	});
 </script>

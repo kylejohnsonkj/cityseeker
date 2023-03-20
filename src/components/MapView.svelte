@@ -10,7 +10,7 @@
   export let modal;
   export let actions;
   
-  let cities, compass;
+  let generator, compass;
   let mapComponent;
 
   const _markersSaved = localStorage.getItem('markersSaved');
@@ -42,14 +42,17 @@
   let isReady = false;
 
   function updateCity() {
-    city = cities.getCurrentCity();
-    actions.updateRegion(cities.getRegion());
+    city = generator.getCurrentCity();
+    actions.updateRegion(generator.getRegion());
     targetLocation = [city.lng, city.lat];
   }
 
-  function ready() {
+  async function ready() {
+    isReady = true;
     getMap().fitBounds(bounds, { animate: false });
     defaultZoom = getMap().getZoom();
+
+    await generator.getCitiesForToday();
     updateCity();
 
     if (lights.isStartOfGame()) {
@@ -84,8 +87,6 @@
         setCompassAngle(guessLocation, milesAway, guess);
       }, 100);
     }
-
-    isReady = true;
   }
 
   function click(event) {
@@ -277,7 +278,7 @@
 </script>
 
 <div class="map" style="height: {height - 211}px">
-  <Cities bind:this={cities} {lights} />
+  <Cities bind:this={generator} {lights} />
   <Map 
   accessToken="pk.eyJ1Ijoia3lqb2huc29uMDkiLCJhIjoiY2xmb2gyNDhhMHZiMzN6cGZyd2hjendkeSJ9.0_uG5PL4M8XWUD-4tDPIBQ" 
   bind:this={mapComponent} 

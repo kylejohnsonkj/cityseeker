@@ -20,6 +20,7 @@
   let guesses = getGuesses();
   let currentGuess = getCurrentGuess();
 
+  // reset the game if # rounds or # guesses change -- dev only
   if ($guessesGrid.length != maxRounds || $guessesGrid[0].length != maxGuesses) {
     restartGame();
   }
