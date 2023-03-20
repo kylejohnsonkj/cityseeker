@@ -55,10 +55,14 @@
     <h2 slot="header">How To Play</h2>
     <br>
     <b>Guess the location in {lights.maxGuesses} tries</b>
-    <ul>
+    <ul class="instructions">
       <li>The location is a city in the 48 states</li>
       <li>Your marker color reflects how far away you are</li>
-      <li>Use the compass to your advantage</li>
+      <li>
+        Use the compass
+        <img src="../images/compass.svg" alt="compass preview" width=30 height=30 />
+        to your advantage
+      </li>
     </ul>
     <br>
     <h3>Legend</h3>
@@ -116,6 +120,9 @@
     padding-left: 30px;
     padding-right: 1px;
   }
+  ul.instructions li:not(:last-child) {
+    margin-top: 3.5px;
+  }
   ul.no-style {
     padding-left: 15px;
     list-style: none;
@@ -125,5 +132,8 @@
   }
   .penalty {
     color: red;
+  }
+  img {
+    vertical-align: middle;
   }
 </style>
