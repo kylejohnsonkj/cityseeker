@@ -39,7 +39,7 @@
   }
 
   function copyResult() {
-    let result = `Searchle ${lights.getScore()}pts\n\n`;
+    let result = `Searchle ${lights.getScore()}/${lights.getMaxScore()}\n\n`;
     result += lights.getGuessesGridAsEmoji();
     alert(result);
   }
@@ -83,11 +83,8 @@
     <br>
     <div class="bottom">
       <div>
-        <span>Round score: {lights.getRoundScore()}</span>
-        {#if lights.didFail()}
-          <span class="penalty">(+2)</span>
-        {/if}
-        <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getScore()}</b></div>
+        <span>Round score: {lights.getRoundScore()}/{lights.getMaxRoundScore()}</span>
+        <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getScore()}/{lights.getMaxScore()}</b></div>
       </div>
       {#if lights.hasNextRound()}
         <Button text="Next Round" on:click={nextRound} />
@@ -121,9 +118,6 @@
   }
   h2, h3 {
     padding-bottom: 5px;
-  }
-  .penalty {
-    color: red;
   }
   img {
     vertical-align: middle;

@@ -20,14 +20,16 @@
   </button>
   <div class="title-container">
 		<img id="logo" src="images/logo.svg" alt="City Seeker">
-		<div class="info">
-			<span class="roundSpan">
-				Round <span class="round">{currentRound + 1}</span> of {lights.maxRounds}
-			</span>
-			<span class="regionSpan">
-				Region: <span class="region">{region}</span>
-			</span>
-		</div>
+		{#if region != ""}
+			<div class="info">
+				<span class="roundSpan">
+					Round <span class="round">{currentRound + 1}</span> of {lights.maxRounds}
+				</span>
+				<span class="regionSpan">
+					Region: <span class="region">{region}</span>
+				</span>
+			</div>
+		{/if}
 	</div>
   <button on:click={lights.restartGame}>
     <img src="images/stats.svg" alt="Stats">

@@ -41,9 +41,14 @@
   export function getScore() {
     return $guessesGrid.reduce((score, guesses) => {
       const guessesCount = guesses.filter(num => num !== 0).length;
-      const penalty = guesses[guesses.length - 1] !== 0 && guesses[guesses.length - 1] !== 5 ? 2 : 0;
-      return score + guessesCount + penalty;
+      const lastGuess = guesses[guessesCount - 1];
+      const guessesScore = lastGuess !== winAccuracy ? 0 : (11 - guessesCount);
+      return score + guessesScore;
     }, 0);
+  }
+
+  export function getMaxScore() {
+    return maxRounds * 10;
   }
 
   function getGuesses() {
@@ -99,7 +104,12 @@
   }
 
   export function getRoundScore() {
-    return currentGuess + (didFail() ? 2 : 0);
+    const lastGuess = guesses[currentGuess - 1];
+    return lastGuess !== winAccuracy ? 0 : (11 - currentGuess);
+  }
+
+  export function getMaxRoundScore() {
+    return 10;
   }
 
   class Guess {
