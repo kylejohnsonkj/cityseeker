@@ -43,11 +43,6 @@
     result += lights.getGuessesGridAsEmoji();
     alert(result);
   }
-
-  function restartGame() {
-    lights.restartGame();
-    showGameOver = false;
-  }
 </script>
 
 {#if showHelp}
@@ -90,7 +85,7 @@
       <div>
         <span>Round score: {lights.getRoundScore()}</span>
         {#if lights.didFail()}
-          <span class="penalty">(+2 penalty)</span>
+          <span class="penalty">(+2)</span>
         {/if}
         <div><b>{lights.hasNextRound() ? "Total" : "Final"} score: {lights.getScore()}</b></div>
       </div>
@@ -98,12 +93,9 @@
         <Button text="Next Round" on:click={nextRound} />
       {:else}
         {#if navigator.share}
-          <Button text="Share" on:click={shareResult} />
+          <Button text="Share Result" on:click={shareResult} />
         {:else}
-          <div>
-            <Button text="Copy" on:click={copyResult} />
-            <Button text="Restart Game" on:click={restartGame} />
-          </div>
+          <Button text="Share Result" on:click={copyResult} />
         {/if}
       {/if}
     </div>

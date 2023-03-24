@@ -7,6 +7,7 @@
 
   export let map;
   export let actions;
+  export let nav;
 
   const _guessesGrid = localStorage.getItem('guessesGrid');
   export const guessesGrid = writable(JSON.parse(_guessesGrid) || createGrid());
@@ -32,7 +33,7 @@
     guesses = getGuesses();
     currentGuess = getCurrentGuess();
     map.nextRound(true);
-    actions.updateCurrentRound(currentRound);
+    nav.updateCurrentRound(currentRound);
     actions.updateScore(getScore());
     console.log("restarted game");
   }
@@ -74,7 +75,7 @@
     currentGuess = 0;
     currentRound++;
     guesses = $guessesGrid[currentRound];
-    actions.updateCurrentRound(currentRound);
+    nav.updateCurrentRound(currentRound);
   }
 
   export function getGuessesGridAsEmoji() {

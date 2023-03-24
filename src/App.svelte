@@ -5,16 +5,18 @@
   import Actions from "./components/Actions.svelte";
 	import ModalView from "./components/ModalView.svelte";
 
-	let lights, map, actions, modal;
+	let nav, lights, map, actions, modal;
 	let height;
 </script>
 
 <svelte:window bind:innerHeight={height}/>
 
 <main>
-	<Nav title="City Seeker" {modal} />
-	<Lights bind:this={lights} {map} {actions} />
-	<MapView bind:this={map} {height} {lights} {modal} {actions} />
+	{#if lights !== undefined}
+		<Nav bind:this={nav} {modal} {lights} />
+	{/if}
+	<Lights bind:this={lights} {map} {actions} {nav} />
+	<MapView bind:this={map} {height} {lights} {modal} {actions} {nav} />
 	{#if lights !== undefined}
 		<Actions bind:this={actions} {lights} {map} />
 	{/if}
