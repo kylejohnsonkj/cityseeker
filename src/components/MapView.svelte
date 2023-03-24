@@ -9,6 +9,7 @@
   export let lights;
   export let modal;
   export let nav;
+  export let actions;
   
   let generator, compass;
   let mapComponent;
@@ -45,6 +46,7 @@
     city = generator.getCurrentCity();
     nav.updateRegion(generator.getRegion());
     targetLocation = [city.lng, city.lat];
+    actions.hideCredits();
   }
 
   async function ready() {

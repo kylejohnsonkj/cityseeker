@@ -5,15 +5,24 @@
   import { onMount } from 'svelte';
 
   let score = lights.getScore();
+  let showCredits = true;
 
   export function updateScore(newScore) {
     score = newScore;
+  }
+
+  export function hideCredits() {
+    setTimeout(() => {
+      showCredits = false;
+    }, 400);
   }
 
   // force score to apply correct coloring on load
   onMount(async () => {
     updateScore(score);
   });
+
+  let extraHeight = window.matchMedia && window.matchMedia('(max-width: 400px)').matches ? 6 : -2
 </script>
 
 <div class="actions">
@@ -22,6 +31,11 @@
   <Button type="minus" on:click={map.zoomOut} />
   <Button type="plus" on:click={map.zoomIn} />
 </div>
+{#if showCredits}
+  <div class="credits" style="margin-top: {extraHeight}px;">
+    Created by Kyle Johnson
+  </div>
+{/if}
 
 <style>
   .actions {
@@ -35,5 +49,8 @@
   }
   .actions > * {
     padding: 10px;
+  }
+  .credits {
+    text-align: center;
   }
 </style>
