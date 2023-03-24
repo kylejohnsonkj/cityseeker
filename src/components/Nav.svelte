@@ -1,4 +1,6 @@
 <script>
+	import { slide } from 'svelte/transition';
+	
 	export let lights;
 	export let modal;
 
@@ -21,7 +23,7 @@
   <div class="title-container">
 		<img id="logo" src="images/logo.svg" alt="City Seeker">
 		{#if region != ""}
-			<div class="info">
+			<div class="info" transition:slide>
 				<span class="roundSpan">
 					Round <span class="round">{currentRound + 1}</span> of {lights.maxRounds}
 				</span>
@@ -55,7 +57,7 @@
 		height: 30px;
 	}
 	.info {
-		margin-top: 2px;
+		margin-top: 3px;
 	}
 	.round {
 		font-weight: bold;
