@@ -30,8 +30,8 @@
   // package.json --http2 --key key.pem --cert cert.pem
   function shareResult() {
     const shareData = {
-      title: 'Searchle',
-      text: `I scored ${lights.getScore()}`,
+      title: 'City Seeker',
+      text: `I scored ${lights.getScore()}/${lights.getMaxScore()}`,
     };
     navigator.share(shareData)
       .then(() => console.log('Shared successfully'))
@@ -39,7 +39,7 @@
   }
 
   function copyResult() {
-    let result = `Searchle ${lights.getScore()}/${lights.getMaxScore()}\n\n`;
+    let result = `City Seeker ${lights.getScore()}/${lights.getMaxScore()}\n\n`;
     result += lights.getGuessesGridAsEmoji();
     alert(result);
   }
