@@ -55,7 +55,7 @@
       <li>Your marker color reflects how far away you are</li>
       <li>
         Use the compass
-        <img src="../images/compass.svg" alt="compass preview" width=30 height=30 />
+        <img src="images/compass.svg" alt="compass preview" width=30 height=30 />
         to your advantage
       </li>
     </ul>
