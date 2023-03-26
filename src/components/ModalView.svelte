@@ -27,11 +27,12 @@
     actions.updateScore(lights.getScore());
   }
 
-  // package.json --http2 --key key.pem --cert cert.pem
   function shareResult() {
+    let result = `City Seeker ${lights.getScore()}/${lights.getMaxScore()}\n\n`;
+    result += lights.getGuessesGridAsEmoji();
     const shareData = {
       title: 'City Seeker',
-      text: `I scored ${lights.getScore()}/${lights.getMaxScore()}`,
+      text: result,
     };
     navigator.share(shareData)
       .then(() => console.log('Shared successfully'))
