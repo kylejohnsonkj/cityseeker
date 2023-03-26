@@ -1,0 +1,18 @@
+* {
+	margin: 0;
+	padding: 0;
+}
+
+:root {
+	--text: #3a3a3a;
+	--button: #ddd;
+	--button-hover: #777;
+	--button-active: #666;
+	--red: #FF4848;
+	--green: #1FB100;
+}
+
+body {
+	font-family: Arial, Helvetica, sans-serif;
+	background-color: #fff;
+}
